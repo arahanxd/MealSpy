@@ -23,7 +23,14 @@ function App() {
       if (cartLink.includes("swiggy")) setPlatform("Swiggy");
       else if (cartLink.includes("zomato")) setPlatform("Zomato");
       else setError("❌ Invalid or unsupported cart link");
-    }, 800); // short simulated delay
+    }, 800);
+  };
+
+  // Handle Enter key press
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleCompare();
+    }
   };
 
   return (
@@ -37,6 +44,7 @@ function App() {
           type="text"
           value={cartLink}
           onChange={(e) => setCartLink(e.target.value)}
+          onKeyDown={handleKeyDown}  // <-- Enter key support
           placeholder="Paste cart link here..."
         />
 
