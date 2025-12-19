@@ -12,7 +12,6 @@ body, html {
   animation: gradientBG 15s ease infinite;
 }
 
-/* Gradient animation */
 @keyframes gradientBG {
   0% {background-position:0% 50%;}
   50% {background-position:100% 50%;}
@@ -34,7 +33,6 @@ body, html {
   width: 100%;
 }
 
-/* Card fade + slide animation */
 .fade-slide {
   opacity: 0;
   transform: translateY(20px);

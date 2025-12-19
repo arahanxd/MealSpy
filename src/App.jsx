@@ -33,7 +33,9 @@ function App() {
   return (
     <div className="app-container">
       <div className="card fade-slide">
+        {/* Logo at the top */}
         <img src="/assets/favicon.png" alt="MealSpy Logo" className="logo" />
+        
         <h1>🍔 MealSpy</h1>
         <p className="subtitle">Compare Swiggy & Zomato cart prices instantly!</p>
 
@@ -41,7 +43,7 @@ function App() {
           type="text"
           value={cartLink}
           onChange={(e) => setCartLink(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={handleKeyDown} 
           placeholder="Paste cart link here..."
         />
 
