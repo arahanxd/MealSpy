@@ -1,12 +1,22 @@
+/* Full screen animated gradient background */
 body, html {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
   height: 100%;
-  background: linear-gradient(135deg, #ff758c, #ff7eb3);
   display: flex;
   justify-content: center;
   align-items: center;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3, #ffb347);
+  background-size: 600% 600%;
+  animation: gradientBG 15s ease infinite;
+}
+
+/* Gradient animation */
+@keyframes gradientBG {
+  0% {background-position:0% 50%;}
+  50% {background-position:100% 50%;}
+  100% {background-position:0% 50%;}
 }
 
 .app-container {
@@ -19,9 +29,23 @@ body, html {
   background-color: #fff;
   border-radius: 20px;
   padding: 30px 25px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
   text-align: center;
   width: 100%;
+}
+
+/* Card fade + slide animation */
+.fade-slide {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeSlide 0.8s ease forwards;
+}
+
+@keyframes fadeSlide {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .logo {
@@ -59,7 +83,7 @@ input:focus {
   box-shadow: 0 0 8px rgba(255,77,79,0.2);
 }
 
-button {
+.hover-button {
   width: 100%;
   background: linear-gradient(90deg, #ff4d4f, #ff758c);
   color: white;
@@ -68,12 +92,12 @@ button {
   padding: 12px;
   font-size: 16px;
   cursor: pointer;
-  transition: 0.3s all;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-button:hover {
-  background: linear-gradient(90deg, #ff758c, #ff4d4f);
+.hover-button:hover {
   transform: scale(1.03);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 }
 
 .loader {
@@ -113,7 +137,6 @@ button:hover {
   .card {
     padding: 25px 15px;
   }
-
   .logo {
     width: 80px;
     height: 80px;

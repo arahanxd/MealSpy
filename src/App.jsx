@@ -26,16 +26,13 @@ function App() {
     }, 800);
   };
 
-  // Handle Enter key press
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleCompare();
-    }
+    if (e.key === "Enter") handleCompare();
   };
 
   return (
     <div className="app-container">
-      <div className="card">
+      <div className="card fade-slide">
         <img src="/assets/favicon.png" alt="MealSpy Logo" className="logo" />
         <h1>🍔 MealSpy</h1>
         <p className="subtitle">Compare Swiggy & Zomato cart prices instantly!</p>
@@ -44,11 +41,11 @@ function App() {
           type="text"
           value={cartLink}
           onChange={(e) => setCartLink(e.target.value)}
-          onKeyDown={handleKeyDown}  // <-- Enter key support
+          onKeyDown={handleKeyDown}
           placeholder="Paste cart link here..."
         />
 
-        <button onClick={handleCompare}>
+        <button onClick={handleCompare} className="hover-button">
           {loading ? <span className="loader"></span> : "Compare Prices"}
         </button>
 
