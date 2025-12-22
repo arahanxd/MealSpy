@@ -2,105 +2,72 @@ import { useState, useEffect } from "react";
 import logo from "./assets/favicon.png";
 import "./App.css";
 
-function App() {
+export default function App() {
   const [cartLink, setCartLink] = useState("");
   const [platform, setPlatform] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
-  // 🔍 Auto-detect while typing
   useEffect(() => {
     if (cartLink.includes("swiggy")) {
       setPlatform("Swiggy");
-      setError("");
     } else if (cartLink.includes("zomato")) {
       setPlatform("Zomato");
-      setError("");
     } else {
       setPlatform("");
     }
   }, [cartLink]);
 
-  const handleCompare = (e) => {
-    e.preventDefault();
+  const handleCompare = () => {
+    if (!platform) return;
 
-    if (!cartLink.trim()) {
-      setError("Please paste a cart link");
-      return;
-    }
+    // Open pasted cart
+    window.open(cartLink, "_blank");
 
-    if (!platform) {
-      setError("Unsupported or invalid cart link");
-      return;
-    }
+    // Open other platform
+    const otherUrl =
+      platform === "Swiggy"
+        ? "https://www.zomato.com"
+        : "https://www.swiggy.com";
 
-    setError("");
-    setSubmitted(true);
-    setLoading(true);
+    window.open(otherUrl, "_blank");
 
-    // ⏳ Fake API delay (backend later)
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    setShowForm(true);
   };
 
   return (
     <div className="page">
       <div className="glass-card">
-        {/* LOGO */}
-        <img src={logo} alt="MealSpy Logo" className="logo" />
+        <img src={logo} alt="MealSpy" className="logo" />
 
         <h1 className="title">MealSpy</h1>
-        <p className="subtitle">
-          Compare Swiggy & Zomato cart prices instantly
-        </p>
+        <p className="subtitle">Compare food prices legally</p>
 
-        <form onSubmit={handleCompare}>
-          <input
-            type="text"
-            placeholder="Paste shared cart link here"
-            value={cartLink}
-            onChange={(e) => setCartLink(e.target.value)}
-          />
+        <input
+          type="text"
+          placeholder="Paste Swiggy or Zomato shared cart link"
+          value={cartLink}
+          onChange={(e) => setCartLink(e.target.value)}
+        />
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Comparing..." : "Compare"}
-          </button>
-        </form>
+        <button onClick={handleCompare} disabled={!platform}>
+          Compare Now
+        </button>
 
-        {/* STATUS */}
-        {platform && !loading && (
-          <p className="success">Detected platform: <b>{platform}</b></p>
-        )}
-        {error && <p className="error">{error}</p>}
+        {showForm && (
+          <div className="compare-form">
+            <h3>Enter final prices</h3>
 
-        {/* LOADER */}
-        {loading && <div className="loader"></div>}
+            <input type="number" placeholder="Swiggy total (₹)" />
+            <input type="number" placeholder="Zomato total (₹)" />
 
-        {/* COMPARISON SKELETON */}
-        {submitted && !loading && (
-          <div className="comparison">
-            <div className="compare-card">
-              <h3>Swiggy</h3>
-              <p>Items: —</p>
-              <p>Total: ₹ —</p>
-            </div>
-
-            <div className="compare-card">
-              <h3>Zomato</h3>
-              <p>Items: —</p>
-              <p>Total: ₹ —</p>
-            </div>
+            <button>Compare Price</button>
           </div>
         )}
 
         <p className="footer">
-          Not affiliated with Swiggy or Zomato
+          MealSpy never scrapes data or accesses your account.
         </p>
       </div>
     </div>
   );
 }
-
-export default App;
