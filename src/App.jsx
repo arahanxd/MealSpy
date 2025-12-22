@@ -7,7 +7,7 @@ function App() {
   const [error, setError] = useState("");
 
   const handleCompare = (e) => {
-    e.preventDefault(); // prevents page reload
+    e.preventDefault();
 
     if (!cartLink.trim()) {
       setError("Please paste a cart link");
@@ -35,7 +35,6 @@ function App() {
           Compare Swiggy & Zomato cart prices instantly
         </p>
 
-        {/* FORM START */}
         <form onSubmit={handleCompare}>
           <input
             type="text"
@@ -46,7 +45,6 @@ function App() {
 
           <button type="submit">Compare</button>
         </form>
-        {/* FORM END */}
 
         {error && <p className="error">{error}</p>}
         {platform && (
@@ -55,9 +53,7 @@ function App() {
           </p>
         )}
 
-        <p className="footer">
-          Not affiliated with Swiggy or Zomato
-        </p>
+        <p className="footer">Not affiliated with Swiggy or Zomato</p>
       </div>
     </div>
   );
