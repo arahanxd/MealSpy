@@ -17,7 +17,8 @@ export default function App() {
     }
   }, [cartLink]);
 
-  const handleCompare = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (!platform) return;
 
     // Open pasted cart
@@ -42,16 +43,19 @@ export default function App() {
         <h1 className="title">MealSpy</h1>
         <p className="subtitle">Compare food prices legally</p>
 
-        <input
-          type="text"
-          placeholder="Paste Swiggy or Zomato shared cart link"
-          value={cartLink}
-          onChange={(e) => setCartLink(e.target.value)}
-        />
+        {/* FORM so Enter works */}
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Paste Swiggy or Zomato shared cart link"
+            value={cartLink}
+            onChange={(e) => setCartLink(e.target.value)}
+          />
 
-        <button onClick={handleCompare} disabled={!platform}>
-          Compare Now
-        </button>
+          <button type="submit" disabled={!platform}>
+            Compare Now
+          </button>
+        </form>
 
         {showForm && (
           <div className="compare-form">
