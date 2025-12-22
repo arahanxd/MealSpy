@@ -1,60 +1,63 @@
 import { useState } from "react";
 import "./App.css";
-import logo from "./assets/favicon.png";  // Import logo from src/assets
 
 function App() {
   const [cartLink, setCartLink] = useState("");
   const [platform, setPlatform] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleCompare = () => {
-    if (cartLink.trim() === "") {
-      setError("⚠️ Please paste a cart link");
+  const handleCompare = (e) => {
+    e.preventDefault(); // prevents page reload
+
+    if (!cartLink.trim()) {
+      setError("Please paste a cart link");
       setPlatform("");
       return;
     }
 
-    setLoading(true);
-    setError("");
-    setPlatform("");
-
-    setTimeout(() => {
-      setLoading(false);
-      if (cartLink.includes("swiggy")) setPlatform("Swiggy");
-      else if (cartLink.includes("zomato")) setPlatform("Zomato");
-      else setError("❌ Invalid or unsupported cart link");
-    }, 800);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleCompare();
+    if (cartLink.includes("swiggy")) {
+      setPlatform("Swiggy");
+      setError("");
+    } else if (cartLink.includes("zomato")) {
+      setPlatform("Zomato");
+      setError("");
+    } else {
+      setPlatform("");
+      setError("Unsupported or invalid cart link");
+    }
   };
 
   return (
-    <div className="app-container">
-      <div className="card fade-slide">
-        <img src={logo} alt="MealSpy Logo" className="logo" />
+    <div className="page">
+      <div className="glass-card">
+        <h1 className="title">🍽️ MealSpy</h1>
+        <p className="subtitle">
+          Compare Swiggy & Zomato cart prices instantly
+        </p>
 
-        <h1>🍔 MealSpy</h1>
-        <p className="subtitle">Compare Swiggy & Zomato cart prices instantly!</p>
+        {/* FORM START */}
+        <form onSubmit={handleCompare}>
+          <input
+            type="text"
+            placeholder="Paste shared cart link here"
+            value={cartLink}
+            onChange={(e) => setCartLink(e.target.value)}
+          />
 
-        <input
-          type="text"
-          value={cartLink}
-          onChange={(e) => setCartLink(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Paste cart link here..."
-        />
-
-        <button onClick={handleCompare} className="hover-button">
-          {loading ? <span className="loader"></span> : "Compare Prices"}
-        </button>
+          <button type="submit">Compare</button>
+        </form>
+        {/* FORM END */}
 
         {error && <p className="error">{error}</p>}
-        {platform && !loading && <p className="success">✅ Platform detected: <b>{platform}</b></p>}
+        {platform && (
+          <p className="success">
+            Platform detected: <b>{platform}</b>
+          </p>
+        )}
 
-        <p className="disclaimer">Not affiliated with Swiggy or Zomato.</p>
+        <p className="footer">
+          Not affiliated with Swiggy or Zomato
+        </p>
       </div>
     </div>
   );
