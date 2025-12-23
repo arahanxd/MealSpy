@@ -11,12 +11,14 @@ export default function App() {
   const [result, setResult] = useState("");
   const [winner, setWinner] = useState("");
 
+  // Detect Swiggy or Zomato
   const detectPlatform = (link) => {
     if (link.toLowerCase().includes("swiggy")) return "Swiggy";
     if (link.toLowerCase().includes("zomato")) return "Zomato";
     return "";
   };
 
+  // Handle Compare Now button
   const handleCompareNow = (e) => {
     e.preventDefault();
     const detected = detectPlatform(cartLink);
@@ -33,23 +35,25 @@ export default function App() {
         ? "https://www.swiggy.com"
         : "https://www.zomato.com";
 
+    // Open both platforms in new tabs
     window.open(cartLink, "_blank");
     window.open(otherUrl, "_blank");
 
-    // Track clicks
+    // Track clicks in backend (MongoDB)
     fetch("http://localhost:5000/api/track-click", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ platform: detected }),
+      body: JSON.stringify({ platform: detected, restaurant: "Unknown" }),
     }).catch(console.error);
 
     fetch("http://localhost:5000/api/track-click", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ platform: otherPlatform }),
+      body: JSON.stringify({ platform: otherPlatform, restaurant: "Unknown" }),
     }).catch(console.error);
   };
 
+  // Handle Compare Price button
   const handlePriceCompare = (e) => {
     e.preventDefault();
     const sw = parseFloat(swiggyTotal);
