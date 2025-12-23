@@ -1,119 +1,124 @@
-import { useState, useEffect } from "react";
-import logo from "./assets/favicon.png";
+import { useState } from "react";
 import "./App.css";
+import logo from "./assets/favicon.png";
 
 export default function App() {
   const [cartLink, setCartLink] = useState("");
   const [platform, setPlatform] = useState("");
-  const [showForm, setShowForm] = useState(false);
   const [swiggyTotal, setSwiggyTotal] = useState("");
   const [zomatoTotal, setZomatoTotal] = useState("");
+  const [showForm, setShowForm] = useState(false);
   const [result, setResult] = useState("");
-  const [winner, setWinner] = useState(""); // "Swiggy" | "Zomato" | "Equal"
+  const [winner, setWinner] = useState("");
 
-  useEffect(() => {
-    if (cartLink.includes("swiggy")) {
-      setPlatform("Swiggy");
-    } else if (cartLink.includes("zomato")) {
-      setPlatform("Zomato");
-    } else {
-      setPlatform("");
-    }
-  }, [cartLink]);
+  const detectPlatform = (link) => {
+    if (link.toLowerCase().includes("swiggy")) return "Swiggy";
+    if (link.toLowerCase().includes("zomato")) return "Zomato";
+    return "";
+  };
 
   const handleCompareNow = (e) => {
     e.preventDefault();
-    if (!platform) return;
+    const detected = detectPlatform(cartLink);
+    if (!detected) return alert("Paste a valid Swiggy or Zomato link");
 
-    const otherUrl =
-      platform === "Swiggy"
-        ? "https://www.zomato.com"
-        : "https://www.swiggy.com";
-
-    window.open(cartLink, "_blank"); // pasted cart
-    window.open(otherUrl, "_blank"); // other platform
-
+    setPlatform(detected);
     setShowForm(true);
+    setResult("");
+    setWinner("");
+
+    const otherPlatform = detected === "Swiggy" ? "Zomato" : "Swiggy";
+    const otherUrl =
+      otherPlatform === "Swiggy"
+        ? "https://www.swiggy.com"
+        : "https://www.zomato.com";
+
+    window.open(cartLink, "_blank");
+    window.open(otherUrl, "_blank");
+
+    // Track clicks
+    fetch("http://localhost:5000/api/track-click", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ platform: detected }),
+    }).catch(console.error);
+
+    fetch("http://localhost:5000/api/track-click", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ platform: otherPlatform }),
+    }).catch(console.error);
   };
 
   const handlePriceCompare = (e) => {
     e.preventDefault();
-
     const sw = parseFloat(swiggyTotal);
     const zo = parseFloat(zomatoTotal);
 
     if (isNaN(sw) || isNaN(zo)) {
-      setResult("Please enter valid totals.");
-      setWinner("");
+      setResult("Enter valid numbers from the app.");
       return;
     }
 
-    const diff = Math.abs(sw - zo);
-    if (diff === 0) {
-      setResult(`Both platforms have the same price: ₹${sw.toFixed(2)}`);
+    if (sw === zo) {
       setWinner("Equal");
+      setResult(`Both cost ₹${sw}`);
     } else if (sw < zo) {
-      setResult(`Swiggy is cheaper by ₹${diff.toFixed(2)}`);
       setWinner("Swiggy");
+      setResult(`Swiggy is cheaper by ₹${(zo - sw).toFixed(2)}`);
     } else {
-      setResult(`Zomato is cheaper by ₹${diff.toFixed(2)}`);
       setWinner("Zomato");
+      setResult(`Zomato is cheaper by ₹${(sw - zo).toFixed(2)}`);
     }
   };
 
   return (
     <div className="page">
       <div className="glass-card">
-        <img src={logo} alt="MealSpy" className="logo" />
+        <img src={logo} className="logo" alt="MealSpy logo" />
+        <h1>MealSpy</h1>
+        <p>Compare food prices safely & legally</p>
 
-        <h1 className="title">MealSpy</h1>
-        <p className="subtitle">Compare food prices legally</p>
-
-        {/* Compare Now Form */}
         <form onSubmit={handleCompareNow}>
           <input
-            type="text"
-            placeholder="Paste Swiggy or Zomato shared cart link"
+            placeholder="Paste Swiggy or Zomato cart link"
             value={cartLink}
             onChange={(e) => setCartLink(e.target.value)}
+            required
           />
-
-          <button type="submit" disabled={!platform}>
-            Compare Now
-          </button>
+          <button disabled={!cartLink}>Compare Now</button>
         </form>
 
-        {/* Compare Price Form */}
         {showForm && (
-          <form className="compare-form" onSubmit={handlePriceCompare}>
-            <h3>Enter final prices</h3>
+          <>
+            <div className="instructions">
+              <p>
+                Open the carts in your mobile app. Copy the totals for each platform
+                and enter below.
+              </p>
+            </div>
 
-            <div className="price-inputs">
+            <form onSubmit={handlePriceCompare}>
               <input
-                type="number"
-                placeholder="Swiggy total (₹)"
+                placeholder="Swiggy total ₹"
                 value={swiggyTotal}
                 onChange={(e) => setSwiggyTotal(e.target.value)}
                 className={winner === "Swiggy" ? "winner" : ""}
+                required
               />
               <input
-                type="number"
-                placeholder="Zomato total (₹)"
+                placeholder="Zomato total ₹"
                 value={zomatoTotal}
                 onChange={(e) => setZomatoTotal(e.target.value)}
                 className={winner === "Zomato" ? "winner" : ""}
+                required
               />
-            </div>
-
-            <button type="submit">Compare Price</button>
-
-            {result && <p className="result">{result}</p>}
-          </form>
+              <button>Compare Price</button>
+            </form>
+          </>
         )}
 
-        <p className="footer">
-          MealSpy never scrapes data or accesses your account.
-        </p>
+        {result && <p className="result">{result}</p>}
       </div>
     </div>
   );
