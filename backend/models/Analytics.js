@@ -4,16 +4,16 @@ const analyticsSchema = new mongoose.Schema({
   platform: {
     type: String,
     enum: ["Swiggy", "Zomato"],
-    required: true,
+    required: true
   },
   restaurant: {
     type: String,
-    required: true,
+    required: true
   },
   timestamp: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 export default mongoose.model("Analytics", analyticsSchema);
